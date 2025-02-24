@@ -11,10 +11,17 @@ export default function Home() {
     return (
         <>
             <Head>
-                <title>Phaser Nextjs Template</title>
-                <meta name="description" content="A Phaser 3 Next.js project template that demonstrates Next.js with React communication and uses Vite for bundling." />
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <title>Typeshooter</title>
+                <meta name="description" content="A speed-test typing game" />
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1"
+                />
                 <link rel="icon" href="/favicon.png" />
+                <link
+                    href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+                    rel="stylesheet"
+                />
             </Head>
             <main className={`${styles.main} ${inter.className}`}>
                 <AppWithoutSSR />

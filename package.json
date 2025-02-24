@@ -25,6 +25,8 @@
         "vite": "^6.1.1"
     },
     "dependencies": {
-        "phaser": "^3.88.2"
+        "@tailwindcss/vite": "^4.0.8",
+        "phaser": "^3.88.2",
+        "tailwindcss": "^4.0.8"
     }
 }

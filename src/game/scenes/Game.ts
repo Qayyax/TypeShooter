@@ -5,37 +5,27 @@ export class Game extends Scene {
     camera: Phaser.Cameras.Scene2D.Camera;
     background: Phaser.GameObjects.Image;
     city: Phaser.GameObjects.Image;
-    gameText: Phaser.GameObjects.Text;
 
     constructor() {
         super("Game");
     }
 
+    // Todo:
+    // Create random words falling
+    // Score counter
+    // Levels to determine how fast words would fall
+    // Correct input to destroy words
+    // if input is correct destroy words, increase score
+    // City health bar
     create() {
         this.camera = this.cameras.main;
         this.camera.setBackgroundColor("#000000");
 
         this.background = this.add.image(512, 384, "background");
         this.background.setAlpha(0.5);
-        this.city = this.add.image(0, 768, "city");
+        this.city = this.add.image(0, 660, "city");
         this.city.setScale(2);
-
-        this.gameText = this.add
-            .text(
-                512,
-                384,
-                "Make something fun!\nand share it with us:\nsupport@phaser.io",
-                {
-                    fontFamily: "Arial Black",
-                    fontSize: 38,
-                    color: "#ffffff",
-                    stroke: "#000000",
-                    strokeThickness: 8,
-                    align: "center",
-                },
-            )
-            .setOrigin(0.5)
-            .setDepth(100);
+        this.city.setAlpha(0.5);
 
         EventBus.emit("current-scene-ready", this);
     }

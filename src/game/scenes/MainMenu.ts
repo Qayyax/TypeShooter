@@ -14,7 +14,6 @@ export class MainMenu extends Scene {
     create() {
         this.background = this.add.image(512, 384, "background");
 
-        // this.logo = this.add.image(512, 300, "logo").setDepth(100);
         this.logo = this.add
             .text(512, 300, "TypeShooter", {
                 fontFamily: '"Press Start 2P", Arial, sans-serif',

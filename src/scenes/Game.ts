@@ -1,4 +1,5 @@
 import { Scene } from "phaser";
+import { generate } from "random-words";
 
 // random words library
 // https://www.npmjs.com/package/random-words
@@ -14,6 +15,7 @@ export class Game extends Scene {
     scoreText: Phaser.GameObjects.Text;
     levelText: Phaser.GameObjects.Text;
     cityText: Phaser.GameObjects.Text;
+    floor: Phaser.GameObjects.Rectangle;
 
     constructor() {
         super("Game");
@@ -21,10 +23,7 @@ export class Game extends Scene {
 
     create() {
         // todo
-        // game start
         // Words faling
-        // Level on the top right
-        // cityHealth under the level
 
         this.camera = this.cameras.main;
         this.camera.setBackgroundColor(0x1a1919);
@@ -46,5 +45,42 @@ export class Game extends Scene {
 
         // Player score
         this.scoreText = this.add.text(680, 22, `Score: ${this.score}`);
+
+        // Ground
+        this.floor = this.add.rectangle(512, 750, 1024, 40, 0x18451f);
+        this.add.existing(this.floor);
+        this.physics.add.existing(this.floor, true);
+
+        this.time.addEvent({
+            delay: 1000,
+            callback: this.spawnFallingWord,
+            callbackScope: this,
+            loop: true,
+        });
+    }
+
+    spawnFallingWord() {
+        const word = generate();
+        console.log(word);
+        const randomX = Phaser.Math.Between(0, this.scale.width - 100);
+        const wordText = this.add.text(randomX, 50, word, {
+            fontSize: "24px",
+            color: "#ffffff",
+        });
+
+        this.physics.world.enable(wordText);
+        const wordBody = wordText.body as Phaser.Physics.Arcade.Body;
+        wordBody.setVelocityY(2);
+        wordBody.setBounce(0.5);
+        wordBody.setCollideWorldBounds(true);
+        this.physics.add.collider(wordBody, this.floor, () => {
+            // Start a timer to destroy the word after 3 seconds
+            this.time.delayedCall(3000, () => {
+                wordText.destroy();
+            });
+
+            // todo -
+            // Change this to an individual function that reduces score if word still exist after 3000
+        });
     }
 }

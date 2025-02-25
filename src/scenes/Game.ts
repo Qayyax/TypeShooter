@@ -27,10 +27,10 @@ export class Game extends Scene {
         // cityHealth under the level
 
         this.camera = this.cameras.main;
-        this.camera.setBackgroundColor(0x00ff00);
+        this.camera.setBackgroundColor(0x1a1919);
 
-        this.background = this.add.image(512, 384, "background");
-        this.background.setAlpha(0.5);
+        this.background = this.add.image(0, 0, "background").setOrigin(0.5, 0);
+        this.background.setAlpha(0.3);
 
         // The top sky where the words fall from
         this.sky = this.add.graphics();
@@ -43,5 +43,8 @@ export class Game extends Scene {
 
         // Game level
         this.levelText = this.add.text(780, 22, `Level: ${this.level}`);
+
+        // Player score
+        this.scoreText = this.add.text(680, 22, `Score: ${this.score}`);
     }
 }

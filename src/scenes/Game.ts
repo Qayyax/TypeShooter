@@ -54,6 +54,7 @@ export class Game extends Scene {
 
         // Word group
         this.wordGroup = this.physics.add.group();
+        this.physics.add.collider(this.wordGroup, this.wordGroup);
 
         // Spawn random words every set seconds
         // todo - delay should be dynamic based on level
@@ -64,7 +65,13 @@ export class Game extends Scene {
             loop: true,
         });
 
-        this.physics.add.collider(this.wordGroup, this.floor);
+        this.physics.add.collider(
+            this.wordGroup,
+            this.floor,
+            (objA, objB) => this.handleCollision(objA, objB),
+            undefined,
+            this,
+        );
 
         this.time.addEvent({
             delay: 100000, // Level up every
@@ -97,6 +104,35 @@ export class Game extends Scene {
             wordBody.setVelocityY(200);
             wordBody.setBounce(0.2);
             wordBody.setCollideWorldBounds(true);
+        }
+    }
+
+    handleCollision(
+        objectA: Phaser.GameObjects.Rectangle | Phaser.GameObjects.Group,
+        objectB: Phaser.GameObjects.Group | Phaser.GameObjects.Rectangle,
+    ) {
+        // ObjectA is rectanlge
+        // ObjectB is text
+        // console.log("ObjectA:", objectA.type);
+        // console.log("ObjectB:", objectB.type);
+        // if (objectA.type === "Text") {
+        //     console.log("ObjectA is text");
+        // } else if (objectB.type === "Rectangle") {
+        //     console.log("ObjectB is rectangle");
+        // }
+
+        if (objectB.type === "Text") {
+            this.time.delayedCall(3000, () => {
+                objectB.destroy();
+                this.reduceHealth();
+            });
+        }
+    }
+
+    reduceHealth() {
+        if (this.cityHealth > 0) {
+            this.cityHealth -= 5;
+            // this.cityText.setText(`City HP: ${this.cityHealth}`);
         }
     }
 }

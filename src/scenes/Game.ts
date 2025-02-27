@@ -16,6 +16,7 @@ export class Game extends Scene {
     levelText: Phaser.GameObjects.Text;
     cityText: Phaser.GameObjects.Text;
     floor: Phaser.GameObjects.Rectangle;
+    wordGroup: Phaser.Physics.Arcade.Group;
 
     constructor() {
         super("Game");
@@ -46,22 +47,42 @@ export class Game extends Scene {
         // Player score
         this.scoreText = this.add.text(680, 22, `Score: ${this.score}`);
 
-        // Ground
+        // Floor
         this.floor = this.add.rectangle(512, 750, 1024, 40, 0x18451f);
         this.add.existing(this.floor);
         this.physics.add.existing(this.floor, true);
 
+        // Word group
+        this.wordGroup = this.physics.add.group();
+
+        // Spawn random words every set seconds
+        // todo - delay should be dynamic based on level
         this.time.addEvent({
-            delay: 1000,
+            delay: this.getSpawnDelay(),
             callback: this.spawnFallingWord,
+            callbackScope: this,
+            loop: true,
+        });
+
+        this.physics.add.collider(this.wordGroup, this.floor);
+
+        this.time.addEvent({
+            delay: 100000, // Level up every
+            callback: () => {
+                this.level++;
+                this.levelText.setText(`Level: ${this.level}`);
+            },
             callbackScope: this,
             loop: true,
         });
     }
 
+    getSpawnDelay() {
+        return Math.max(500, 3000 - this.level * 100);
+    }
+
     spawnFallingWord() {
         const word = generate();
-        console.log(word);
         const randomX = Phaser.Math.Between(0, this.scale.width - 100);
         const wordText = this.add.text(randomX, 50, word, {
             fontSize: "24px",
@@ -69,18 +90,13 @@ export class Game extends Scene {
         });
 
         this.physics.world.enable(wordText);
-        const wordBody = wordText.body as Phaser.Physics.Arcade.Body;
-        wordBody.setVelocityY(2);
-        wordBody.setBounce(0.5);
-        wordBody.setCollideWorldBounds(true);
-        this.physics.add.collider(wordBody, this.floor, () => {
-            // Start a timer to destroy the word after 3 seconds
-            this.time.delayedCall(3000, () => {
-                wordText.destroy();
-            });
+        this.wordGroup.add(wordText);
 
-            // todo -
-            // Change this to an individual function that reduces score if word still exist after 3000
-        });
+        const wordBody = wordText.body as Phaser.Physics.Arcade.Body;
+        if (wordBody) {
+            wordBody.setVelocityY(200);
+            wordBody.setBounce(0.2);
+            wordBody.setCollideWorldBounds(true);
+        }
     }
 }

@@ -16,7 +16,8 @@ export class Game extends Scene {
     levelText: Phaser.GameObjects.Text;
     cityText: Phaser.GameObjects.Text;
     floor: Phaser.GameObjects.Rectangle;
-    wordGroup: Phaser.Physics.Arcade.Group;
+    words: { text: Phaser.GameObjects.Text; word: string }[] = [];
+    playerInput: string = "";
 
     constructor() {
         super("Game");
@@ -52,10 +53,6 @@ export class Game extends Scene {
         this.add.existing(this.floor);
         this.physics.add.existing(this.floor, true);
 
-        // Word group
-        this.wordGroup = this.physics.add.group();
-        this.physics.add.collider(this.wordGroup, this.wordGroup);
-
         // Spawn random words every set seconds
         // todo - delay should be dynamic based on level
         this.time.addEvent({
@@ -64,15 +61,6 @@ export class Game extends Scene {
             callbackScope: this,
             loop: true,
         });
-
-        this.physics.add.collider(
-            this.wordGroup,
-            this.floor,
-            (objA, objB) => this.handleCollision(objA, objB),
-            undefined,
-            this,
-        );
-
         this.time.addEvent({
             delay: 100000, // Level up every
             callback: () => {
@@ -84,55 +72,82 @@ export class Game extends Scene {
         });
     }
 
+    update(time: number, delta: number): void {
+        // Todo
+        // Check player's input
+        // Every word on screen that has that input
+        // letter should be highlighted in red
+        // if spelling matches word, and that is the whole word
+        // increase score
+        // remove word
+    }
+
     getSpawnDelay() {
         return Math.max(500, 3000 - this.level * 100);
     }
 
+    handlePlayerInput(key: string) {
+        if (key === "Backspace") {
+            // Remove last character from input
+            this.playerInput = this.playerInput.slice(0, -1);
+        } else if (key.length === 1) {
+            // Add typed character to input
+            this.playerInput += key;
+        }
+
+        // Highlight matching words
+        this.words.forEach(({ text, word }) => {
+            if (word.startsWith(this.playerInput)) {
+                // Highlight matched portion
+                text.setText(
+                    `[color=#00ff00]${this.playerInput}[/color]${word.slice(
+                        this.playerInput.length,
+                    )}`,
+                );
+            } else {
+                // Reset to default color if not matched
+                text.setText(word);
+            }
+        });
+
+        // Check for exact match
+        const matchIndex = this.words.findIndex(
+            ({ word }) => word === this.playerInput,
+        );
+        if (matchIndex !== -1) {
+            const matchedWord = this.words[matchIndex];
+            matchedWord.text.destroy(); // Remove the word from the scene
+            this.words.splice(matchIndex, 1); // Remove from the array
+            this.playerInput = ""; // Reset the input
+            this.score++; // Increment score
+            this.scoreText.setText(`Score: ${this.score}`);
+        }
+    }
+
     spawnFallingWord() {
-        const word = generate();
+        const word = generate() as string;
         const randomX = Phaser.Math.Between(0, this.scale.width - 100);
-        const wordText = this.add.text(randomX, 50, word, {
+        const wordText = this.add.text(randomX, 53, word, {
             fontSize: "24px",
             color: "#ffffff",
         });
 
         this.physics.world.enable(wordText);
-        this.wordGroup.add(wordText);
 
         const wordBody = wordText.body as Phaser.Physics.Arcade.Body;
         if (wordBody) {
-            wordBody.setVelocityY(200);
-            wordBody.setBounce(0.2);
+            const baseSpeed = 20;
+            const speedIncrement = 5;
+            wordBody.setVelocityY(baseSpeed + speedIncrement * this.level);
             wordBody.setCollideWorldBounds(true);
         }
-    }
-
-    handleCollision(
-        objectA: Phaser.GameObjects.Rectangle | Phaser.GameObjects.Group,
-        objectB: Phaser.GameObjects.Group | Phaser.GameObjects.Rectangle,
-    ) {
-        // ObjectA is rectanlge
-        // ObjectB is text
-        // console.log("ObjectA:", objectA.type);
-        // console.log("ObjectB:", objectB.type);
-        // if (objectA.type === "Text") {
-        //     console.log("ObjectA is text");
-        // } else if (objectB.type === "Rectangle") {
-        //     console.log("ObjectB is rectangle");
-        // }
-
-        if (objectB.type === "Text") {
-            this.time.delayedCall(3000, () => {
-                objectB.destroy();
-                this.reduceHealth();
-            });
-        }
+        this.words.push({ text: wordText, word: word });
     }
 
     reduceHealth() {
         if (this.cityHealth > 0) {
             this.cityHealth -= 5;
-            // this.cityText.setText(`City HP: ${this.cityHealth}`);
+            this.cityText.setText(`City HP: ${this.cityHealth}`);
         }
     }
 }

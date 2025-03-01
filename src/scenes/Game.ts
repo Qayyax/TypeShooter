@@ -25,6 +25,8 @@ export class Game extends Scene {
     }
 
     create() {
+        // todo
+        // set text input to have a box where the input would be in
         this.camera = this.cameras.main;
         this.camera.setBackgroundColor("#1a1919");
 
@@ -88,7 +90,7 @@ export class Game extends Scene {
         // if spelling matches word, and that is the whole word
         // increase score
         // remove word
-        this.words.forEach(({ text, word }, index) => {
+        this.words.forEach(({ text }, index) => {
             const wordBody = text.body as Phaser.Physics.Arcade.Body;
 
             if (wordBody && wordBody.y >= this.floor.y - 10) {

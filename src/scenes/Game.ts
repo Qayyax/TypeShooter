@@ -18,6 +18,7 @@ export class Game extends Scene {
     floor: Phaser.GameObjects.Rectangle;
     words: { text: Phaser.GameObjects.Text; word: string }[] = [];
     playerInput: string = "";
+    playerInputOn: Phaser.GameObjects.Text;
 
     constructor() {
         super("Game");
@@ -53,6 +54,13 @@ export class Game extends Scene {
         this.add.existing(this.floor);
         this.physics.add.existing(this.floor, true);
 
+        // Player input on screen
+        this.playerInputOn = this.add.text(400, 700, this.playerInput, {
+            fontSize: "40px",
+            color: "#ffffff",
+        });
+        this.playerInputOn.setDepth(100);
+
         // Spawn random words every set seconds
         // todo - delay should be dynamic based on level
         this.time.addEvent({
@@ -70,9 +78,13 @@ export class Game extends Scene {
             callbackScope: this,
             loop: true,
         });
+
+        this.input.keyboard.on("keydown", (event: KeyboardEvent) => {
+            this.handlePlayerInput(event.key);
+        });
     }
 
-    update(time: number, delta: number): void {
+    update() {
         // Todo
         // Check player's input
         // Every word on screen that has that input
@@ -80,6 +92,16 @@ export class Game extends Scene {
         // if spelling matches word, and that is the whole word
         // increase score
         // remove word
+        this.words.forEach(({ text, word }, index) => {
+            const wordBody = text.body as Phaser.Physics.Arcade.Body;
+
+            if (wordBody && wordBody.y >= this.floor.y - 10) {
+                text.destroy(); // Remove the word from the scene
+                this.words.splice(index, 1); // Remove from the array
+                this.reduceHealth(); // Decrease city health
+            }
+        });
+        this.playerInputOn.setText(this.playerInput);
     }
 
     getSpawnDelay() {
@@ -87,23 +109,26 @@ export class Game extends Scene {
     }
 
     handlePlayerInput(key: string) {
+        console.log(this.playerInput);
+        console.log(this.words, "this words");
         if (key === "Backspace") {
             // Remove last character from input
             this.playerInput = this.playerInput.slice(0, -1);
+        } else if (key === "Enter") {
+            this.playerInput = "";
         } else if (key.length === 1) {
             // Add typed character to input
             this.playerInput += key;
         }
 
+        if (this.playerInput === "") return;
         // Highlight matching words
         this.words.forEach(({ text, word }) => {
             if (word.startsWith(this.playerInput)) {
+                const matchedPart = this.playerInput;
+                const remainingPart = word.slice(this.playerInput.length);
                 // Highlight matched portion
-                text.setText(
-                    `[color=#00ff00]${this.playerInput}[/color]${word.slice(
-                        this.playerInput.length,
-                    )}`,
-                );
+                text.setText(matchedPart).setColor("#00ff00").appendText(remainingPart);
             } else {
                 // Reset to default color if not matched
                 text.setText(word);

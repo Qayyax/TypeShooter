@@ -115,7 +115,29 @@ export class Game extends Scene {
             this.playerInput = this.playerInput.trim();
         }
 
-        if (this.playerInput === "") return;
+        // if (this.playerInput === "") return;
+
+        //  Gradient color
+        this.words.forEach(({ text, word }) => {
+            if (word.startsWith(this.playerInput)) {
+                const matchedPart = this.playerInput;
+
+                // Set a gradient for the matched portion
+                const gradient = text.context.createLinearGradient(0, 0, text.width, 0);
+                gradient.addColorStop(0, "#35ED1C");
+                gradient.addColorStop(matchedPart.length / word.length, "#35ED1C");
+                gradient.addColorStop(matchedPart.length / word.length, "#ffffff");
+                gradient.addColorStop(1, "#ffffff");
+
+                // Apply the gradient and set the text
+                text.setText(word);
+                text.setFill(gradient);
+            } else {
+                // Reset to default style
+                text.setText(word).setFill("#ffffff");
+            }
+        });
+
         // Check for exact match
         const matchIndex = this.words.findIndex(
             ({ word }) => word === this.playerInput,
@@ -124,8 +146,9 @@ export class Game extends Scene {
             const matchedWord = this.words[matchIndex];
             matchedWord.text.destroy(); // Remove the word from the scene
             this.words.splice(matchIndex, 1); // Remove from the array
-            this.playerInput = ""; // Reset the input
-            this.score++; // Increment score
+            // Reset the input
+            this.playerInput = "";
+            this.score++;
             this.scoreText.setText(`Score: ${this.score}`);
         }
     }
@@ -142,8 +165,8 @@ export class Game extends Scene {
 
         const wordBody = wordText.body as Phaser.Physics.Arcade.Body;
         if (wordBody) {
-            const baseSpeed = 20;
-            const speedIncrement = 5;
+            const baseSpeed = 50;
+            const speedIncrement = 20;
             wordBody.setVelocityY(baseSpeed + speedIncrement * this.level);
             wordBody.setCollideWorldBounds(true);
         }

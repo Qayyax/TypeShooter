@@ -25,18 +25,15 @@ export class Game extends Scene {
     }
 
     create() {
-        // todo
-        // Words faling
-
         this.camera = this.cameras.main;
-        this.camera.setBackgroundColor(0x1a1919);
+        this.camera.setBackgroundColor("#1a1919");
 
         this.background = this.add.image(0, 0, "background").setOrigin(0.5, 0);
         this.background.setAlpha(0.3);
 
         // The top sky where the words fall from
         this.sky = this.add.graphics();
-        this.sky.fillStyle(0x00000, 0.8);
+        this.sky.fillStyle(0, 0.8);
         this.sky.fillRect(0, 0, 1024, 70);
         // this.sky.setDepth(50);
 
@@ -61,16 +58,14 @@ export class Game extends Scene {
         });
         this.playerInputOn.setDepth(100);
 
-        // Spawn random words every set seconds
-        // todo - delay should be dynamic based on level
         this.time.addEvent({
-            delay: this.getSpawnDelay(),
+            delay: 2000,
             callback: this.spawnFallingWord,
             callbackScope: this,
             loop: true,
         });
         this.time.addEvent({
-            delay: 100000, // Level up every
+            delay: 60_000, // Level up every
             callback: () => {
                 this.level++;
                 this.levelText.setText(`Level: ${this.level}`);
@@ -104,13 +99,7 @@ export class Game extends Scene {
         this.playerInputOn.setText(this.playerInput);
     }
 
-    getSpawnDelay() {
-        return Math.max(500, 3000 - this.level * 100);
-    }
-
     handlePlayerInput(key: string) {
-        console.log(this.playerInput);
-        console.log(this.words, "this words");
         if (key === "Backspace") {
             // Remove last character from input
             this.playerInput = this.playerInput.slice(0, -1);
@@ -119,21 +108,22 @@ export class Game extends Scene {
         } else if (key.length === 1) {
             // Add typed character to input
             this.playerInput += key;
+            this.playerInput = this.playerInput.trim();
         }
 
         if (this.playerInput === "") return;
         // Highlight matching words
-        this.words.forEach(({ text, word }) => {
-            if (word.startsWith(this.playerInput)) {
-                const matchedPart = this.playerInput;
-                const remainingPart = word.slice(this.playerInput.length);
-                // Highlight matched portion
-                text.setText(matchedPart).setColor("#00ff00").appendText(remainingPart);
-            } else {
-                // Reset to default color if not matched
-                text.setText(word);
-            }
-        });
+        // this.words.forEach(({ text, word }) => {
+        //     if (word.startsWith(this.playerInput)) {
+        //         const matchedPart = this.playerInput;
+        //         const remainingPart = word.slice(this.playerInput.length);
+        //         // Highlight matched portion
+        //         text.setText(matchedPart).setColor("#00ff00").appendText(remainingPart);
+        //     } else {
+        //         // Reset to default color if not matched
+        //         text.setText(word);
+        //     }
+        // });
 
         // Check for exact match
         const matchIndex = this.words.findIndex(

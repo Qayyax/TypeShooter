@@ -75,7 +75,8 @@ export class Game extends Scene {
         });
 
         this.input.keyboard.on("keydown", (event: KeyboardEvent) => {
-            this.handlePlayerInput(event.key);
+            // this.handlePlayerInput(event.key);
+            this.handlePlayerInput(event);
         });
     }
 
@@ -99,32 +100,22 @@ export class Game extends Scene {
         this.playerInputOn.setText(this.playerInput);
     }
 
-    handlePlayerInput(key: string) {
-        if (key === "Backspace") {
+    handlePlayerInput(event: KeyboardEvent) {
+        if ((event.ctrlKey || event.metaKey) && event.key === "Backspace") {
+            this.playerInput = "";
+        }
+        if (event.key === "Backspace") {
             // Remove last character from input
             this.playerInput = this.playerInput.slice(0, -1);
-        } else if (key === "Enter") {
+        } else if (event.key === "Enter") {
             this.playerInput = "";
-        } else if (key.length === 1) {
+        } else if (event.key.length === 1) {
             // Add typed character to input
-            this.playerInput += key;
+            this.playerInput += event.key;
             this.playerInput = this.playerInput.trim();
         }
 
         if (this.playerInput === "") return;
-        // Highlight matching words
-        // this.words.forEach(({ text, word }) => {
-        //     if (word.startsWith(this.playerInput)) {
-        //         const matchedPart = this.playerInput;
-        //         const remainingPart = word.slice(this.playerInput.length);
-        //         // Highlight matched portion
-        //         text.setText(matchedPart).setColor("#00ff00").appendText(remainingPart);
-        //     } else {
-        //         // Reset to default color if not matched
-        //         text.setText(word);
-        //     }
-        // });
-
         // Check for exact match
         const matchIndex = this.words.findIndex(
             ({ word }) => word === this.playerInput,

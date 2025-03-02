@@ -9,7 +9,6 @@ export class Game extends Scene {
     background: Phaser.GameObjects.Image;
     sky: Phaser.GameObjects.Graphics;
     cityHealth: number = 100;
-    maxCityHealth: number = 100;
     score: number = 0;
     level: number = 0;
     scoreText: Phaser.GameObjects.Text;
@@ -92,8 +91,12 @@ export class Game extends Scene {
         });
         this.playerInputOn.setText(this.playerInput);
         if (this.cityHealth <= 0) {
+            // Save the score to the registry
+            this.registry.set("score", this.score);
+            this.registry.set("level", this.level);
             // working on Gameover scene
             this.scene.start("GameOver");
+            this.resetGame();
         }
     }
 
@@ -183,5 +186,9 @@ export class Game extends Scene {
     resetGame() {
         this.cityHealth = 100;
         this.cityText.setText(`City HP: ${this.cityHealth}`);
+        this.level = 0;
+        this.levelText.setText(`Level: ${this.level}`);
+        this.score = 0;
+        this.scoreText.setText(`Score: ${this.score}`);
     }
 }

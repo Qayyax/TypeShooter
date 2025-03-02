@@ -4,6 +4,7 @@ export class MainMenu extends Scene {
     background: GameObjects.Image;
     logo: GameObjects.Image;
     title: GameObjects.Text;
+    gameName: GameObjects.Text;
 
     constructor() {
         super("MainMenu");
@@ -11,17 +12,22 @@ export class MainMenu extends Scene {
 
     create() {
         // todo
-        // Change logo
         // Add music maybe
         // Fadeaway animation for the speed
-        //
         this.background = this.add.image(512, 384, "background");
 
-        this.logo = this.add.image(512, 300, "logo");
+        this.gameName = this.add.text(300, 350, "TypeShooter", {
+            fontFamily: '"Press Start 2P"',
+            fontSize: 60,
+            color: "#ffffff",
+            stroke: "#000000",
+            strokeThickness: 8,
+            align: "center",
+        });
 
         this.title = this.add
             .text(512, 460, "Play", {
-                fontFamily: "Arial Black",
+                fontFamily: '"Press Start 2P"',
                 fontSize: 38,
                 color: "#ffffff",
                 stroke: "#000000",

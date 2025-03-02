@@ -26,7 +26,6 @@ export class Game extends Scene {
 
     create() {
         // todo
-        // set text input to have a box where the input would be in
         this.camera = this.cameras.main;
         this.camera.setBackgroundColor("#1a1919");
 
@@ -49,25 +48,25 @@ export class Game extends Scene {
         this.scoreText = this.add.text(680, 22, `Score: ${this.score}`);
 
         // Floor
-        this.floor = this.add.rectangle(512, 750, 1024, 40, 0x18451f);
+        this.floor = this.add.rectangle(512, 750, 1024, 40, 0x1b1818);
         this.add.existing(this.floor);
         this.physics.add.existing(this.floor, true);
 
         // Player input on screen
-        this.playerInputOn = this.add.text(400, 700, this.playerInput, {
+        this.playerInputOn = this.add.text(400, 730, this.playerInput, {
             fontSize: "40px",
             color: "#ffffff",
         });
         this.playerInputOn.setDepth(100);
 
         this.time.addEvent({
-            delay: 2000,
+            delay: Phaser.Math.Between(500, 2200),
             callback: this.spawnFallingWord,
             callbackScope: this,
             loop: true,
         });
         this.time.addEvent({
-            delay: 60_000, // Level up every
+            delay: 30_000, // Level up every 30 seconds
             callback: () => {
                 this.level++;
                 this.levelText.setText(`Level: ${this.level}`);
@@ -76,30 +75,26 @@ export class Game extends Scene {
             loop: true,
         });
 
-        this.input.keyboard.on("keydown", (event: KeyboardEvent) => {
-            // this.handlePlayerInput(event.key);
+        this.input.keyboard?.on("keydown", (event: KeyboardEvent) => {
             this.handlePlayerInput(event);
         });
     }
 
     update() {
-        // Todo
-        // Check player's input
-        // Every word on screen that has that input
-        // letter should be highlighted in red
-        // if spelling matches word, and that is the whole word
-        // increase score
-        // remove word
         this.words.forEach(({ text }, index) => {
             const wordBody = text.body as Phaser.Physics.Arcade.Body;
 
             if (wordBody && wordBody.y >= this.floor.y - 10) {
-                text.destroy(); // Remove the word from the scene
+                text.destroy();
                 this.words.splice(index, 1); // Remove from the array
-                this.reduceHealth(); // Decrease city health
+                this.reduceHealth();
             }
         });
         this.playerInputOn.setText(this.playerInput);
+        if (this.cityHealth <= 0) {
+            // working on Gameover scene
+            this.scene.start("GameOver");
+        }
     }
 
     handlePlayerInput(event: KeyboardEvent) {
@@ -156,6 +151,9 @@ export class Game extends Scene {
     }
 
     spawnFallingWord() {
+        // todo
+        // Future update
+        // Select type of words - uppercase, title case with numbers
         const word = generate() as string;
         const randomX = Phaser.Math.Between(0, this.scale.width - 100);
         const wordText = this.add.text(randomX, 53, word, {
@@ -180,5 +178,10 @@ export class Game extends Scene {
             this.cityHealth -= 5;
             this.cityText.setText(`City HP: ${this.cityHealth}`);
         }
+    }
+
+    resetGame() {
+        this.cityHealth = 100;
+        this.cityText.setText(`City HP: ${this.cityHealth}`);
     }
 }

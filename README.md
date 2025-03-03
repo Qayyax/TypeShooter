@@ -2,7 +2,7 @@
 
 TypeShooter is an action-packed typing game where you defend your city by typing words that fall from the sky. Test your typing speed and accuracy as you race against time to protect your city from falling words.
 
-![TypeShooter Game Screenshot](./screenshot.png)
+![TypeShooter Game Screenshot](screenshot.png)
 
 ## 🎮 Game Overview
 

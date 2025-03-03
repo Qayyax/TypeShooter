@@ -1,151 +1,88 @@
-# Phaser Vite TypeScript Template
+# TypeShooter
 
-This is a Phaser 3 project template that uses Vite for bundling. It supports hot-reloading for quick development workflow, includes TypeScript support and scripts to generate production-ready builds.
+TypeShooter is an action-packed typing game where you defend your city by typing words that fall from the sky. Test your typing speed and accuracy as you race against time to protect your city from falling words.
 
-**[This Template is also available as a JavaScript version.](https://github.com/phaserjs/template-vite)**
+![TypeShooter Game Screenshot](./screenshot.png)
 
-### Versions
+## 🎮 Game Overview
 
-This template has been updated for:
+In TypeShooter, words randomly fall from the top of the screen. Players must type these words correctly before they reach the bottom of the screen. Each word that hits the ground reduces the city's health. The game progressively gets more challenging as levels increase, with words falling at faster speeds.
 
-- [Phaser 3.88.2](https://github.com/phaserjs/phaser)
-- [Vite 5.3.1](https://github.com/vitejs/vite)
-- [TypeScript 5.4.5](https://github.com/microsoft/TypeScript)
+## 📋 Features
 
-![screenshot](screenshot.png)
+- **Progressive Difficulty**: The game increases in difficulty over time as you level up
+- **Real-time Feedback**: Words change color as you type, showing your progress
+- **Score Tracking**: Keep track of your score and level
+- **City Health System**: Protect your city by preventing words from hitting the ground
+- **Responsive Design**: Automatically adjusts to fit different screen sizes
 
-## Requirements
+## 🕹️ How to Play
 
-[Node.js](https://nodejs.org) is required to install dependencies and run scripts via `npm`.
+1. Words will fall from the top of the screen
+2. Type the falling words exactly as they appear
+3. Press Enter or complete the word to destroy it
+4. Prevent words from hitting the ground to protect your city's health
+5. The game gets faster with each level
+6. Game ends when your city's health reaches zero
 
-## Available Commands
+### Controls
+- **Type** the letters shown on screen
+- **Backspace** to delete the last character
+- **Ctrl+Backspace** (or Cmd+Backspace) to clear your input
+- **Enter** to reset your input
 
-| Command | Description |
-|---------|-------------|
-| `npm install` | Install project dependencies |
-| `npm run dev` | Launch a development web server |
-| `npm run build` | Create a production build in the `dist` folder |
-| `npm run dev-nolog` | Launch a development web server without sending anonymous data (see "About log.js" below) |
-| `npm run build-nolog` | Create a production build in the `dist` folder without sending anonymous data (see "About log.js" below) |
+## 🚀 Getting Started
 
-## Writing Code
+### Prerequisites
 
-After cloning the repo, run `npm install` from your project directory. Then, you can start the local development server by running `npm run dev`.
+- Node.js (v14 or newer)
+- npm or yarn
 
-The local development server runs on `http://localhost:8080` by default. Please see the Vite documentation if you wish to change this, or add SSL support.
+### Installation
 
-Once the server is running you can edit any of the files in the `src` folder. Vite will automatically recompile your code and then reload the browser.
+1. Clone the repository:
+   ```
+   git clone https://github.com/Qayyax/TypeShooter.git
+   cd TypeShooter
+   ```
 
-## Template Project Structure
+2. Install dependencies:
+   ```
+   npm install
+   ```
 
-We have provided a default project structure to get you started. This is as follows:
+3. Start the development server:
+   ```
+   npm run dev
+   ```
 
-- `index.html` - A basic HTML page to contain the game.
-- `src` - Contains the game source code.
-- `src/main.ts` - The main **entry** point. This contains the game configuration and starts the game.
-- `src/vite-env.d.ts` - Global TypeScript declarations, provide types information.
-- `src/scenes/` - The Phaser Scenes are in this folder.
-- `public/style.css` - Some simple CSS rules to help with page layout.
-- `public/assets` - Contains the static assets used by the game.
+4. Open your browser and navigate to `http://localhost:8080` (or the port shown in your terminal)
 
-## Handling Assets
+## 🛠️ Built With
 
-Vite supports loading assets via JavaScript module `import` statements.
+- [Phaser 3](https://phaser.io/phaser3) - HTML5 Game Framework
+- [TypeScript](https://www.typescriptlang.org/) - Typed JavaScript
+- [Vite](https://vitejs.dev/) - Next Generation Frontend Tooling
+- [random-words](https://www.npmjs.com/package/random-words) - Random word generator
 
-This template provides support for both embedding assets and also loading them from a static folder. To embed an asset, you can import it at the top of the JavaScript file you are using it in:
+## 🧠 Game Mechanics
 
-```js
-import logoImg from './assets/logo.png'
-```
+- Words are randomly generated using the `random-words` library
+- Word falling speed increases with each level
+- Each word that hits the ground reduces city health by 5 points
+- Game ends when city health reaches 0
+- Level increases every 30 seconds
+- The game keeps track of your score (number of words successfully typed)
 
-To load static files such as audio files, videos, etc place them into the `public/assets` folder. Then you can use this path in the Loader calls within Phaser:
+## 📝 Future Enhancements
 
-```js
-preload ()
-{
-    //  This is an example of an imported bundled image.
-    //  Remember to import it at the top of this file
-    this.load.image('logo', logoImg);
+- Different word types (uppercase, title case, with numbers)
+- Power-ups and special abilities
+- Multiple difficulty levels
+- Online leaderboards
+- Sound effects and background music
+- Visual effects for destroyed words
 
-    //  This is an example of loading a static image
-    //  from the public/assets folder:
-    this.load.image('background', 'assets/bg.png');
-}
-```
+## 📄 License
 
-When you issue the `npm run build` command, all static assets are automatically copied to the `dist/assets` folder.
-
-## Deploying to Production
-
-After you run the `npm run build` command, your code will be built into a single bundle and saved to the `dist` folder, along with any other assets your project imported, or stored in the public assets folder.
-
-In order to deploy your game, you will need to upload *all* of the contents of the `dist` folder to a public facing web server.
-
-## Customizing the Template
-
-### Vite
-
-If you want to customize your build, such as adding plugin (i.e. for loading CSS or fonts), you can modify the `vite/config.*.mjs` file for cross-project changes, or you can modify and/or create new configuration files and target them in specific npm tasks inside of `package.json`. Please see the [Vite documentation](https://vitejs.dev/) for more information.
-
-## About log.js
-
-If you inspect our node scripts you will see there is a file called `log.js`. This file makes a single silent API call to a domain called `gryzor.co`. This domain is owned by Phaser Studio Inc. The domain name is a homage to one of our favorite retro games.
-
-We send the following 3 pieces of data to this API: The name of the template being used (vue, react, etc). If the build was 'dev' or 'prod' and finally the version of Phaser being used.
-
-At no point is any personal data collected or sent. We don't know about your project files, device, browser or anything else. Feel free to inspect the `log.js` file to confirm this.
-
-Why do we do this? Because being open source means we have no visible metrics about which of our templates are being used. We work hard to maintain a large and diverse set of templates for Phaser developers and this is our small anonymous way to determine if that work is actually paying off, or not. In short, it helps us ensure we're building the tools for you.
-
-However, if you don't want to send any data, you can use these commands instead:
-
-Dev:
-
-```bash
-npm run dev-nolog
-```
-
-Build:
-
-```bash
-npm run build-nolog
-```
-
-Or, to disable the log entirely, simply delete the file `log.js` and remove the call to it in the `scripts` section of `package.json`:
-
-Before:
-
-```json
-"scripts": {
-    "dev": "node log.js dev & dev-template-script",
-    "build": "node log.js build & build-template-script"
-},
-```
-
-After:
-
-```json
-"scripts": {
-    "dev": "dev-template-script",
-    "build": "build-template-script"
-},
-```
-
-Either of these will stop `log.js` from running. If you do decide to do this, please could you at least join our Discord and tell us which template you're using! Or send us a quick email. Either will be super-helpful, thank you.
-
-## Join the Phaser Community!
-
-We love to see what developers like you create with Phaser! It really motivates us to keep improving. So please join our community and show-off your work 😄
-
-**Visit:** The [Phaser website](https://phaser.io) and follow on [Phaser Twitter](https://twitter.com/phaser_)<br />
-**Play:** Some of the amazing games [#madewithphaser](https://twitter.com/search?q=%23madewithphaser&src=typed_query&f=live)<br />
-**Learn:** [API Docs](https://newdocs.phaser.io), [Support Forum](https://phaser.discourse.group/) and [StackOverflow](https://stackoverflow.com/questions/tagged/phaser-framework)<br />
-**Discord:** Join us on [Discord](https://discord.gg/phaser)<br />
-**Code:** 2000+ [Examples](https://labs.phaser.io)<br />
-**Read:** The [Phaser World](https://phaser.io/community/newsletter) Newsletter<br />
-
-Created by [Phaser Studio](mailto:support@phaser.io). Powered by coffee, anime, pixels and love.
-
-The Phaser logo and characters are &copy; 2011 - 2024 Phaser Studio Inc.
-
-All rights reserved.
+This project is licensed under the MIT License - see the LICENSE file for details.

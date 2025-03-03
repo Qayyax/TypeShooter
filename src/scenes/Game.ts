@@ -59,7 +59,7 @@ export class Game extends Scene {
         this.playerInputOn.setDepth(100);
 
         this.time.addEvent({
-            delay: Phaser.Math.Between(500, 2200),
+            delay: Phaser.Math.Between(500, 1000),
             callback: this.spawnFallingWord,
             callbackScope: this,
             loop: true,

@@ -18,13 +18,17 @@ export class Game extends Scene {
   words: { text: Phaser.GameObjects.Text; word: string }[] = [];
   playerInput: string = "";
   playerInputOn: Phaser.GameObjects.Text;
+  wordSpawnEvent: Phaser.Time.TimerEvent;
+  levelUpEvent: Phaser.Time.TimerEvent;
 
   constructor() {
     super("Game");
   }
 
   create() {
-    // todo
+    // Reset game state when scene starts
+    this.resetGame();
+
     this.camera = this.cameras.main;
     this.camera.setBackgroundColor("#1a1919");
 
@@ -58,13 +62,15 @@ export class Game extends Scene {
     });
     this.playerInputOn.setDepth(100);
 
-    this.time.addEvent({
-      delay: Phaser.Math.Between(500, 1500),
+    // Store timer event references so we can destroy them when scene ends
+    this.wordSpawnEvent = this.time.addEvent({
+      delay: Phaser.Math.Between(1000, 3000),
       callback: this.spawnFallingWord,
       callbackScope: this,
       loop: true,
     });
-    this.time.addEvent({
+
+    this.levelUpEvent = this.time.addEvent({
       delay: 30_000, // Level up every 30 seconds
       callback: () => {
         this.level++;
@@ -74,9 +80,24 @@ export class Game extends Scene {
       loop: true,
     });
 
+    // Make sure to remove any existing listeners before adding new ones
+    this.input.keyboard?.off("keydown");
     this.input.keyboard?.on("keydown", (event: KeyboardEvent) => {
       this.handlePlayerInput(event);
     });
+  }
+
+  shutdown() {
+    // Clean up when scene shuts down
+    if (this.wordSpawnEvent) this.wordSpawnEvent.destroy();
+    if (this.levelUpEvent) this.levelUpEvent.destroy();
+    this.input.keyboard?.off("keydown");
+
+    // Clear all words
+    this.words.forEach(({ text }) => {
+      text.destroy();
+    });
+    this.words = [];
   }
 
   update() {
@@ -96,7 +117,6 @@ export class Game extends Scene {
       this.registry.set("level", this.level);
       // working on Gameover scene
       this.scene.start("GameOver");
-      this.resetGame();
     }
   }
 
@@ -190,10 +210,9 @@ export class Game extends Scene {
 
   resetGame() {
     this.cityHealth = 100;
-    this.cityText.setText(`City HP: ${this.cityHealth}`);
     this.level = 0;
-    this.levelText.setText(`Level: ${this.level}`);
     this.score = 0;
-    this.scoreText.setText(`Score: ${this.score}`);
+    this.playerInput = "";
+    this.words = [];
   }
 }

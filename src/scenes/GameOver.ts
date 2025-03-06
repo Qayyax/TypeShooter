@@ -54,21 +54,59 @@ export class GameOver extends Scene {
       })
       .setOrigin(0.5);
 
-    // Add a prompt for restarting or returning to the menu (below the score)
-    this.add
-      .text(512, 500, "Click to return to Main Menu", {
+    // Add a restart game option
+    const restartText = this.add
+      .text(512, 480, "Restart Game", {
         fontFamily: '"Press Start 2P"',
         fontSize: "24px",
         color: "#ffffff",
         align: "center",
       })
-      .setOrigin(0.5);
+      .setOrigin(0.5)
+      .setInteractive();
 
-    this.input.once("pointerdown", () => {
-      this.scene.start("Preloader");
+    restartText.on("pointerover", () => {
+      restartText.setStyle({ color: "#842929" });
     });
-    this.input.once("keydown-ENTER", () => {
-      this.scene.start("Preloader");
+
+    restartText.on("pointerout", () => {
+      restartText.setStyle({ color: "#ffffff" });
+    });
+
+    restartText.on("pointerdown", () => {
+      this.scene.start("Game");
+    });
+
+    // Add a prompt for returning to the menu (below the score)
+    const menuText = this.add
+      .text(512, 540, "Return to Main Menu", {
+        fontFamily: '"Press Start 2P"',
+        fontSize: "24px",
+        color: "#ffffff",
+        align: "center",
+      })
+      .setOrigin(0.5)
+      .setInteractive();
+
+    menuText.on("pointerover", () => {
+      menuText.setStyle({ color: "#842929" });
+    });
+
+    menuText.on("pointerout", () => {
+      menuText.setStyle({ color: "#ffffff" });
+    });
+
+    menuText.on("pointerdown", () => {
+      this.scene.start("MainMenu");
+    });
+
+    // Keyboard shortcuts
+    this.input.keyboard?.once("keydown-ENTER", () => {
+      this.scene.start("Game");
+    });
+
+    this.input.keyboard?.once("keydown-ESCAPE", () => {
+      this.scene.start("MainMenu");
     });
   }
 }
